@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+    
+    tools {
+        maven 'M3' 
+    }
+
+    stages {
+        stage('Checkout') {
+            steps { 
+                git url: 'https://github.com/parnikanag/maven-archive', branch: 'main'
+            }
+        }
+        stage('Build') {
+            steps { 
+                sh 'mvn clean package -DskipTests' 
+            }
+        }
+    }
+
+    post {
+        success {
+            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+        }
+    }
+}
